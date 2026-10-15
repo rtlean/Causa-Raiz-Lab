@@ -9,10 +9,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "next": "15.1.6",
+    "next": "^15.5.28",
     "pg": "^8.13.1",
-    "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react": "^19.2.9",
+    "react-dom": "^19.2.9"
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^5.9.0",
