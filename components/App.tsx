@@ -635,7 +635,16 @@ function Plano({
 
   async function criarAcao(e: React.FormEvent) {
     e.preventDefault();
-    if (!selecionada) return;
+    if (!selecionada) return onErro("Escolha uma análise antes de criar a ação.");
+    const faltando: string[] = [];
+    if (!form.hipotese_id) faltando.push("hipótese validada");
+    if (form.o_que.trim().length < 10) faltando.push("O que (mín. 10 caracteres)");
+    if (form.por_que.trim().length < 10) faltando.push("Por quê (mín. 10 caracteres)");
+    if (!form.quem.trim()) faltando.push("Quem");
+    if (!form.onde.trim()) faltando.push("Onde");
+    if (!form.quando) faltando.push("Quando");
+    if (form.como.trim().length < 10) faltando.push("Como (mín. 10 caracteres)");
+    if (faltando.length) return onErro("Falta preencher: " + faltando.join(", ") + ".");
     try {
       await api('/api/acoes', { method: 'POST', body: JSON.stringify({ analise_id: selecionada, ...form }) });
       setForm({ ...form, o_que: '', por_que: '', quem: '', onde: '', como: '', quanto: '' });
@@ -720,7 +729,7 @@ function Plano({
             {validadas.length === 0 && (
               <div className="aviso">Nenhuma hipótese validada nesta análise. Valide uma hipótese na aba Diagrama antes de criar ações.</div>
             )}
-            <form onSubmit={criarAcao} className="grid">
+            <form onSubmit={criarAcao} className="grid" noValidate>
               <label className="largo">Hipótese validada
                 <select value={form.hipotese_id} onChange={(e) => setForm({ ...form, hipotese_id: e.target.value })} required>
                   <option value="" disabled>Escolha</option>
@@ -741,7 +750,7 @@ function Plano({
                   <option value="preventiva">Preventiva</option>
                 </select>
               </label>
-              <div className="largo"><button className="primario" disabled={!form.hipotese_id}>Criar ação</button></div>
+              <div className="largo"><button className="primario" type="submit">Criar ação</button></div>
             </form>
           </div>
 
