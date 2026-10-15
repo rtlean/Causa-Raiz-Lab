@@ -733,7 +733,11 @@ function Plano({
               <label className="largo">Hipótese validada
                 <select value={form.hipotese_id} onChange={(e) => setForm({ ...form, hipotese_id: e.target.value })} required>
                   <option value="" disabled>Escolha</option>
-                  {validadas.map((h) => <option key={h.id} value={h.id}>{h.enunciado}</option>)}
+                  {detalhe.hipoteses.map((h) => (
+                    <option key={h.id} value={h.id} disabled={h.estado !== 'validada'}>
+                      {ESTADOS[h.estado]}: {h.enunciado}{h.estado !== 'validada' ? ' (ainda não validada)' : ''}
+                    </option>
+                  ))}
                 </select>
               </label>
               <label className="largo">O que (what)<input value={form.o_que} onChange={(e) => setForm({ ...form, o_que: e.target.value })} required minLength={10} /></label>
