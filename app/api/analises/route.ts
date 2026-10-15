@@ -1,10 +1,8 @@
 import { query } from '@/lib/db';
-import { naoAutorizado, sessaoAtiva } from '@/lib/sessao';
 import { erroBanco, invalido, texto } from '@/lib/http';
 
 // GET: lista análises com o efeito antes/depois já calculado pela view.
 export async function GET() {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   try {
     const rows = await query(
       `select e.*, t.nome as time_nome
@@ -20,7 +18,6 @@ export async function GET() {
 
 // POST: cria análise. O time é criado na primeira vez, pelo nome.
 export async function POST(req: Request) {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return invalido('Corpo inválido');
 

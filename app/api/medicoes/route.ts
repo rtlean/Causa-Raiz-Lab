@@ -1,10 +1,8 @@
 import { query } from '@/lib/db';
-import { naoAutorizado, sessaoAtiva } from '@/lib/sessao';
 import { erroBanco, invalido, inteiro, texto } from '@/lib/http';
 
 // POST: registra medição antes ou depois. Amostra é obrigatória — sem amostra não entra.
 export async function POST(req: Request) {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return invalido('Corpo inválido');
 

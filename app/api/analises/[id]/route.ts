@@ -1,10 +1,8 @@
 import { query } from '@/lib/db';
-import { naoAutorizado, sessaoAtiva } from '@/lib/sessao';
 import { erroBanco } from '@/lib/http';
 
 // GET: tudo de uma análise em uma chamada. Usado pelas abas Diagrama, Riscos e Plano.
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   const { id } = await params;
 
   try {

@@ -1,5 +1,4 @@
 import { query } from '@/lib/db';
-import { naoAutorizado, sessaoAtiva } from '@/lib/sessao';
 import { erroBanco, invalido, texto } from '@/lib/http';
 
 const TIPOS = ['contencao', 'corretiva', 'preventiva'];
@@ -8,7 +7,6 @@ const STATUS = ['planejada', 'em_andamento', 'concluida', 'cancelada'];
 // POST: cria ação 5W2H. Se a hipótese não estiver validada, o banco recusa com a
 // mensagem metodológica (trigger acao_exige_causa_validada). Não há contorno aqui.
 export async function POST(req: Request) {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return invalido('Corpo inválido');
 
@@ -43,7 +41,6 @@ export async function POST(req: Request) {
 
 // PATCH: muda status. Concluir exige efeito_observado — a constraint impõe.
 export async function PATCH(req: Request) {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return invalido('Corpo inválido');
 

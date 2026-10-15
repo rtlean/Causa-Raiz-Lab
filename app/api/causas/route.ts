@@ -1,12 +1,10 @@
 import { query } from '@/lib/db';
-import { naoAutorizado, sessaoAtiva } from '@/lib/sessao';
 import { erroBanco, invalido, texto } from '@/lib/http';
 
 const DIMENSOES = ['ferramentas', 'processos', 'requisitos', 'pessoas', 'metricas', 'ambiente'];
 
 // POST: cria causa primária (sem parent_id) ou subcausa (com parent_id).
 export async function POST(req: Request) {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return invalido('Corpo inválido');
 

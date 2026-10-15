@@ -99,11 +99,6 @@ export default function App() {
     if (selecionada) await carregarDetalhe(selecionada);
   }, [carregarLista, carregarDetalhe, selecionada]);
 
-  async function sair() {
-    await fetch('/api/login', { method: 'DELETE' });
-    window.location.href = '/login';
-  }
-
   return (
     <>
       <header className="topo">
@@ -112,7 +107,6 @@ export default function App() {
             <div className="dim">Agile Master · Ishikawa + evidência</div>
             <h1>Causa Raiz Lab</h1>
           </div>
-          <button className="secundario" onClick={sair}>Sair</button>
         </div>
       </header>
 

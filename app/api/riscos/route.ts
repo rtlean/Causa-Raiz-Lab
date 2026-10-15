@@ -1,5 +1,4 @@
 import { query } from '@/lib/db';
-import { naoAutorizado, sessaoAtiva } from '@/lib/sessao';
 import { erroBanco, invalido, inteiro, texto } from '@/lib/http';
 
 const CATEGORIAS = ['seguranca', 'financeiro', 'disponibilidade', 'prazo', 'pessoas', 'conformidade'];
@@ -8,7 +7,6 @@ const RESPOSTAS = ['mitigar', 'transferir', 'aceitar', 'evitar'];
 // POST: risco com probabilidade e severidade. Exposição é calculada pelo banco.
 // Risco aceito exige gatilho escrito — a constraint aceite_exige_gatilho impõe.
 export async function POST(req: Request) {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return invalido('Corpo inválido');
 

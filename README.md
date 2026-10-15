@@ -1,6 +1,6 @@
 # Causa Raiz Lab
 
-App web pessoal para análise de causa raiz (Ishikawa, 5 Porquês, hipóteses com evidência, riscos e plano de ação com medição antes/depois). Uso individual, acesso protegido por senha simples.
+App web pessoal para análise de causa raiz (Ishikawa, 5 Porquês, hipóteses com evidência, riscos e plano de ação com medição antes/depois). Uso individual, sem login.
 
 ## Stack
 
@@ -21,29 +21,25 @@ Copie `.env.example` para `.env.local` e preencha. Nunca faça commit de `.env*`
 | Variável | Uso |
 |---|---|
 | `DATABASE_URL` | Connection string do Neon (com `sslmode=require`) |
-| `APP_PASSWORD` | Senha de acesso ao app |
 
 ## Como rodar
 
 ```bash
 npm install
-cp .env.example .env.local   # preencha DATABASE_URL e APP_PASSWORD
 npm run dev
 ```
 
 ## Estrutura
 
-- `app/` — páginas (`/`, `/login`) e rotas da API (`/api/*`)
+- `app/` — página (`/`) e rotas da API (`/api/*`)
 - `components/App.tsx` — as 5 abas (Dashboard, Análises, Diagrama, Riscos, Plano de Ação)
-- `lib/` — conexão com o banco, autenticação por senha e helpers de validação
+- `lib/` — conexão com o bancoe helpers de validação
 - `db/migrations/` — schema SQL
 
 ## Status
 
 - [x] Schema e trigger no Neon (aplicados em `production`)
 - [x] Scaffold Next.js, com build de produção passando
-- [x] Tela de senha (sessão protegida no servidor)
 - [x] API das 5 abas
 - [x] Interface das 5 abas
 - [ ] Teste ponta a ponta contra o banco (pendente)
-- [ ] Deploy na Netlify (variáveis `DATABASE_URL` e `APP_PASSWORD` a configurar)

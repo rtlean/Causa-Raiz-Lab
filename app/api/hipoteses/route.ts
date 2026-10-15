@@ -1,5 +1,4 @@
 import { query } from '@/lib/db';
-import { naoAutorizado, sessaoAtiva } from '@/lib/sessao';
 import { erroBanco, invalido, inteiro, texto } from '@/lib/http';
 
 const ESTADOS = ['hipotese', 'em_teste', 'validada', 'refutada', 'inconclusiva'];
@@ -7,7 +6,6 @@ const ESTADOS = ['hipotese', 'em_teste', 'validada', 'refutada', 'inconclusiva']
 // POST: cria hipótese com as três notas (impacto, força de evidência, viabilidade).
 // O score é calculado pelo banco, o app não envia.
 export async function POST(req: Request) {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return invalido('Corpo inválido');
 
@@ -44,7 +42,6 @@ export async function POST(req: Request) {
 
 // PATCH: registra o teste. Validar ou refutar exige resultado_teste — o banco impõe.
 export async function PATCH(req: Request) {
-  if (!(await sessaoAtiva())) return naoAutorizado();
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   if (!body) return invalido('Corpo inválido');
 
