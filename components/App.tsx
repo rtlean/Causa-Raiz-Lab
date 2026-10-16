@@ -331,6 +331,8 @@ function Diagrama({
     impacto: '3', forca_evidencia: '3', viabilidade: '3', frequencia: '0',
   });
 
+  const [teste, setTeste] = useState<{ id: string; estado: 'validada' | 'refutada'; texto: string } | null>(null);
+
   const porDimensao = useMemo(() => {
     const m: Record<string, Causa[]> = {};
     detalhe?.causas.forEach((c) => { (m[c.dimensao] ??= []).push(c); });
@@ -370,16 +372,17 @@ function Diagrama({
     } catch (err) { onErro((err as Error).message); }
   }
 
-  async function registrarTeste(h: Hipotese, estado: string) {
-    const resultado = estado === 'validada' || estado === 'refutada'
-      ? window.prompt(`O que o dado mostrou? (mín. 10 caracteres)`) ?? ''
-      : null;
-    if ((estado === 'validada' || estado === 'refutada') && (!resultado || resultado.trim().length < 10)) return;
+  async function registrarTeste(h: Hipotese, estado: string, resultado: string | null = null) {
+    if ((estado === 'validada' || estado === 'refutada') && (!resultado || resultado.trim().length < 10)) {
+      onErro('Escreva o que o dado mostrou, com pelo menos 10 caracteres.');
+      return;
+    }
     try {
       await api('/api/hipoteses', {
         method: 'PATCH',
         body: JSON.stringify({ id: h.id, estado, resultado_teste: resultado }),
       });
+      setTeste(null);
       await onAtualizar();
     } catch (err) { onErro((err as Error).message); }
   }
@@ -404,9 +407,26 @@ function Diagrama({
             {h.resultado_teste && <small>Resultado: {h.resultado_teste}</small>}
             {!['validada', 'refutada'].includes(h.estado) && (
               <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.4rem', flexWrap: 'wrap' }}>
-                <button className="secundario" onClick={() => registrarTeste(h, 'em_teste')}>Em teste</button>
-                <button className="secundario" onClick={() => registrarTeste(h, 'validada')}>Validar</button>
-                <button className="secundario perigo" onClick={() => registrarTeste(h, 'refutada')}>Refutar</button>
+                <button className="secundario" type="button" onClick={() => registrarTeste(h, 'em_teste')}>Em teste</button>
+                <button className="secundario" type="button" onClick={() => setTeste({ id: h.id, estado: 'validada', texto: '' })}>Validar</button>
+                <button className="secundario perigo" type="button" onClick={() => setTeste({ id: h.id, estado: 'refutada', texto: '' })}>Refutar</button>
+              </div>
+            )}
+            {teste && teste.id === h.id && (
+              <div style={{ marginTop: '0.5rem' }}>
+                <label>O que o dado mostrou (mín. 10 caracteres)</label>
+                <textarea
+                  rows={2}
+                  value={teste.texto}
+                  placeholder="Ex.: três deploys falharam por falta de treino na ferramenta"
+                  onChange={(e) => setTeste({ ...teste, texto: e.target.value })}
+                />
+                <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.3rem', flexWrap: 'wrap' }}>
+                  <button className="primario" type="button" onClick={() => registrarTeste(h, teste.estado, teste.texto)}>
+                    {teste.estado === 'validada' ? 'Confirmar validação' : 'Confirmar refutação'}
+                  </button>
+                  <button className="secundario" type="button" onClick={() => setTeste(null)}>Cancelar</button>
+                </div>
               </div>
             )}
           </div>
